@@ -16,7 +16,7 @@ from pathlib import Path
 from shutil import rmtree, copy, copyfileobj
 
 import openmc.data
-from openmc_data import download, process_neutron, process_thermal, state_download_size, ProgressTracker
+from openmc_data import download, process_neutron, process_thermal, state_download_size, update_zsymam, ProgressTracker
 
 # Make sure Python version is sufficient
 assert sys.version_info >= (3, 6), "Python 3.6+ is required"
@@ -439,6 +439,11 @@ def main():
 
     if 'neutron' in args.particles:
         particle = 'neutron'
+        if args.release == 'viii.1':
+            # Patch non-unique ZSYMAM fields
+            update_zsymam(thermal_dir / 'tsl-UinUO2-5P.endf',   'UUO2-5P')
+            update_zsymam(thermal_dir / 'tsl-UinUO2-10P.endf',  'UUO2-10P')
+            update_zsymam(thermal_dir / 'tsl-UinUO2-100P.endf', 'UUO2-100P')
         with Pool() as pool:
             details = release_details[args.release][particle]
             results = []
