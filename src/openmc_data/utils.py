@@ -166,6 +166,17 @@ def process_thermal(path_neutron, path_thermal, output_dir, libver):
     data.export_to_hdf5(h5_file, 'w', libver=libver)
 
 
+def update_zsymam(path, new_zsymam):
+    """Update the ZSYMAM field in an ENDF-formatted file."""
+    path = Path(path)
+    lines = path.read_text().splitlines(keepends=True)
+
+    line = lines[5]
+    lines[5] = new_zsymam.ljust(11) + line[11:]
+
+    path.write_text(''.join(lines))
+
+
 def extract(
     compressed_files,
     extraction_dir,
